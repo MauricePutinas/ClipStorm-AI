@@ -16,6 +16,12 @@ plattformgerecht für **TikTok · Instagram Reels · YouTube Shorts · LinkedIn 
 ![SQLite](https://img.shields.io/badge/SQLite-local-003B57?logo=sqlite&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-22d3ee.svg)
 
+<br/>
+
+![ClipStorm AI – Produkt-Tour](docs/screenshots/tour.gif)
+
+<sub>Produkt-Tour: Landing → Dashboard → Neues Projekt → Clips → Clip-Editor → Hook Engine → Kalender → Preise</sub>
+
 </div>
 
 ---
@@ -59,6 +65,33 @@ Agenturen und Selbstständige, die aus langen Inhalten in Sekunden Short-Form-Co
 | 🎨 **Brand Profiles** | Tonalität, Tabu-Wörter & CTA-Stil fließen in die Generierung ein |
 | 💳 **Lemon Squeezy** | Pricing, Plan-Limits & Webhook vorbereitet |
 | 🛠️ **Adminbereich** | Nutzer- & Plan-Verwaltung, Systemstatus |
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/01-landing.png" alt="Landingpage"/><br/><sub><b>Landingpage</b> – Hero, Vorher/Nachher, Features</sub></td>
+    <td width="50%"><img src="docs/screenshots/02-dashboard.png" alt="Dashboard"/><br/><sub><b>Dashboard</b> – Kennzahlen, Top-Clips & Abo-Status</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/03-neues-projekt.png" alt="Neues Projekt"/><br/><sub><b>Neues Projekt</b> – Transkript einfügen & generieren</sub></td>
+    <td width="50%"><img src="docs/screenshots/05-clips.png" alt="Clip-Board"/><br/><sub><b>Clip-Board</b> – Ideen mit Viral-Score, Filter & Status</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/06-clip-editor.png" alt="Clip-Editor"/><br/><sub><b>Clip-Editor</b> – alle Felder editierbar, Copy-Buttons</sub></td>
+    <td width="50%"><img src="docs/screenshots/07-hook-engine.png" alt="Hook Engine"/><br/><sub><b>Hook Engine</b> – 9 Hook-Varianten je Thema</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/08-kalender.png" alt="Content-Kalender"/><br/><sub><b>Content-Kalender</b> – Monats- & Listenansicht</sub></td>
+    <td width="50%"><img src="docs/screenshots/09-preise.png" alt="Abo & Preise"/><br/><sub><b>Abo & Preise</b> – Pricing & Lemon-Squeezy-Status</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/04-projekte.png" alt="Projekte"/><br/><sub><b>Projekte</b> – Übersicht aller Projekte</sub></td>
+    <td width="50%"><img src="docs/screenshots/10-admin.png" alt="Adminbereich"/><br/><sub><b>Adminbereich</b> – Nutzer, Pläne & Systemstatus</sub></td>
+  </tr>
+</table>
 
 ---
 
