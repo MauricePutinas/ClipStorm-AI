@@ -1,0 +1,189 @@
+// ClipStorm AI – Prisma Schema
+// Datenbank: SQLite (lokal). Hinweis: SQLite unterstützt in Prisma keine Enums
+// und keine Scalar-Listen. Wir verwenden daher String-Felder (Werte werden via
+// Zod validiert) und speichern Listen als JSON-String.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  // Rolle: "USER" | "ADMIN"
+  role      String   @default("USER")
+  // Plan: "FREE" | "CREATOR" | "PRO" | "AGENCY"
+  plan      String   @default("FREE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects      Project[]
+  subscription  Subscription?
+  brandProfiles BrandProfile[]
+  exportLogs    ExportLog[]
+  calendarItems CalendarItem[]
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String
+  niche        String   @default("")
+  audience     String   @default("")
+  // Tonalität: z.B. "locker", "professionell", "inspirierend", "humorvoll"
+  tone         String   @default("locker")
+  // Sprache: "de" | "en"
+  language     String   @default("de")
+  // Plattformen als JSON-Array-String, z.B. ["tiktok","reels"]
+  platforms    String   @default("[]")
+  transcript   String   @default("")
+  videoLengthSec Int?
+  // Status: "DRAFT" | "ANALYZED"
+  status       String   @default("DRAFT")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clips         ClipIdea[]
+  calendarItems CalendarItem[]
+  exportLogs    ExportLog[]
+
+  @@index([userId])
+}
+
+model ClipIdea {
+  id                  String   @id @default(cuid())
+  projectId           String
+  title               String
+  hook                String   @default("")
+  description         String   @default("")
+  // Empfohlene Plattform: "tiktok" | "reels" | "shorts" | "linkedin" | "snapchat"
+  recommendedPlatform String   @default("tiktok")
+  // Clip-Länge in Sekunden: 15 | 30 | 60
+  lengthSec           Int      @default(30)
+  textOverlay         String   @default("")
+  caption             String   @default("")
+  // Hashtags als JSON-Array-String
+  hashtags            String   @default("[]")
+  cutInstruction      String   @default("")
+  bRoll               String   @default("")
+  cta                 String   @default("")
+  // Viral-Potenzial 0..100
+  viralScore          Int      @default(50)
+  // Schwierigkeit: "EASY" | "MEDIUM" | "HARD"
+  difficulty          String   @default("MEDIUM")
+  // Status: "IDEA" | "SELECTED" | "PLANNED" | "PUBLISHED"
+  status              String   @default("IDEA")
+  order               Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  project          Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  platformVersions PlatformVersion[]
+  calendarItems    CalendarItem[]
+
+  @@index([projectId])
+}
+
+model PlatformVersion {
+  id          String   @id @default(cuid())
+  clipId      String
+  platform    String
+  hook        String   @default("")
+  caption     String   @default("")
+  hashtags    String   @default("[]")
+  textOverlay String   @default("")
+  // Plattform-spezifische Zusatzfelder als JSON-String
+  extra       String   @default("{}")
+  createdAt   DateTime @default(now())
+
+  clip ClipIdea @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@unique([clipId, platform])
+  @@index([clipId])
+}
+
+model CalendarItem {
+  id          String   @id @default(cuid())
+  userId      String
+  projectId   String?
+  clipId      String?
+  title       String
+  platform    String   @default("tiktok")
+  scheduledAt DateTime
+  // Status: "PLANNED" | "PUBLISHED"
+  status      String   @default("PLANNED")
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  clip    ClipIdea? @relation(fields: [clipId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([scheduledAt])
+}
+
+model Subscription {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  // Plan: "FREE" | "CREATOR" | "PRO" | "AGENCY"
+  plan            String    @default("FREE")
+  // Status: "active" | "on_trial" | "cancelled" | "expired" | "past_due" | "none"
+  status          String    @default("none")
+  lemonSqueezyId  String?
+  customerId      String?
+  variantId       String?
+  renewsAt        DateTime?
+  endsAt          DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ExportLog {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String?
+  // Format: "CSV" | "MARKDOWN" | "JSON" | "CUTTER"
+  format    String
+  // Scope-Beschreibung, z.B. "project:clips" | "all:clips" | "calendar"
+  scope     String   @default("")
+  createdAt DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+model BrandProfile {
+  id                 String   @id @default(cuid())
+  userId             String
+  name               String
+  audience           String   @default("")
+  tone               String   @default("locker")
+  niche              String   @default("")
+  // Zu vermeidende Wörter als JSON-Array-String
+  avoidWords         String   @default("[]")
+  // Bevorzugte Plattformen als JSON-Array-String
+  preferredPlatforms String   @default("[]")
+  // CTA-Stil: z.B. "direkt", "soft", "frage", "fomo"
+  ctaStyle           String   @default("direkt")
+  isDefault          Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
